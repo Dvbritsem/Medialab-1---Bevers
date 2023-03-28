@@ -54,6 +54,8 @@ function runAI_Check() {
 function showOutput_Check(output) {
     console.log(output);
 
+    stopAnimation();
+
     let checked_output_summary = document.getElementById("checked_output_summary");
     checked_output_summary.innerText = output[2].content.utterance;
 
@@ -129,6 +131,8 @@ function runAI_Improve() {
 }
 
 function showOutput_Improve(output) {
+    stopAnimation();
+
     console.log(output);
 
     let improved_output = document.getElementById("improved_output");
