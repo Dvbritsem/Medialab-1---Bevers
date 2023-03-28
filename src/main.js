@@ -54,23 +54,44 @@ function runAI_Check() {
 function showOutput_Check(output) {
     console.log(output);
 
-    let checked_output_summary = document.getElementById("checked_output_summary");
-    checked_output_summary.innerText = output[2].content.utterance;
-
-    let checked_output_sentiments = document.getElementById("checked_output_sentiments");
-    checked_output_sentiments.innerText = output[0].content;
+    stopAnimation();
 
     let checked_output_topics = document.getElementById("checked_output_topics");
-    let topics_text = "";
-    for (let o = 0; o < output[1].content.length; o++) {
-        let output_topic = output[1].content[o];
+    let topics_text = "Geen gevonden";
+    let checked_output_sentiments = document.getElementById("checked_output_sentiments");
+    let sentiment_text = "Geen gevonden";
+    let sentiment_count = 0;
 
-        if (o == 0) {
-            topics_text = topics_text + output_topic;
-        } else {
-            topics_text = topics_text + "- " + output_topic;
+    for (let i = 0; i < output.length; i++) {
+        let outputPart = output[i];
+
+        if (outputPart.label == "topics") {
+            for (let o = 0; o < outputPart.content.length; o++) {
+                let output_topic = outputPart.content[o];
+        
+                if (o == 0) {
+                    topics_text = output_topic;
+                } else {
+                    topics_text = topics_text + "- " + output_topic;
+                }
+            }
+        }
+        if (outputPart.label == "summarize") {
+            let checked_output_summary = document.getElementById("checked_output_summary");
+            checked_output_summary.innerText = outputPart.content.utterance;
+        }
+        if (outputPart.label == "sentiment") {
+            sentiment_count = sentiment_count + 1;
+
+            if (sentiment_count == 1) {
+                sentiment_text = "<li>" + outputPart.content + "</li>";
+            } else {
+                sentiment_text = sentiment_text + "<li>" + outputPart.content + "</li>";
+            }
         }
     }
+
+    checked_output_sentiments.innerHTML = sentiment_text;
 
     checked_output_topics.innerText = topics_text;
 }
@@ -129,6 +150,8 @@ function runAI_Improve() {
 }
 
 function showOutput_Improve(output) {
+    stopAnimation();
+
     console.log(output);
 
     let improved_output = document.getElementById("improved_output");

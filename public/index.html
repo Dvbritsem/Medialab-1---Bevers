@@ -8,53 +8,81 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/>
     <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="animations.js"></script>
 </head>
-<body>
+<body class="bg-gray-100 font-sans"> 
     <header class="bg-gray-300">
-        <h1 class="text-3xl p-2">OptiPitch</h1>
+        <nav id="header" class="fixed w-full bg-white-100 z-10 top-0">
+			<div class="w-full md:max-w-4xl mx-auto flex flex-wrap items-center justify-between mt-0 py-3">
+
+				<div class="pl-4">
+					<a class="text-gray-900 text-base no-underline hover:no-underline font-extrabold text-xl" href="#">
+						optiPitch
+					</a>
+				</div>
+
+				<div class="block lg:hidden pr-4">
+					<button id="nav-toggle" class="flex items-center px-3 py-2 border rounded text-gray-500 border-gray-600 hover:text-gray-900 hover:border-green-500 appearance-none focus:outline-none">
+						<svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+							<title>Menu</title>
+							<path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+						</svg>
+					</button>
+				</div>
+
+				<div class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden lg:block mt-2 lg:mt-0 bg-gray-100 md:bg-transparent z-20" id="nav-content">
+					<ul class="list-reset lg:flex justify-end flex-1 items-center">
+						<li class="mr-3">
+							<a class="inline-block py-2 px-4 text-gray-900 font-bold no-underline" href="./index.html">Controleren</a>
+						</li>
+						<li class="mr-3">
+							<a class="inline-block text-gray-600 no-underline hover:text-gray-900 hover:underline py-2 px-4" href="./improve.html">Verbeteren</a>
+						</li>
+						<li class="mr-3">
+							<a class="inline-block text-gray-600 no-underline hover:text-gray-900 hover:underline py-2 px-4" href="./instructions.html">instructies</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
     </header>
-    <div class="grid grid-cols-2 gap-20 p-5">
-        <div>
-            <h2 class="text-xl font-bold p-2">Jou idee</h2>
-            <div class="bg-gray-300 p-5">
-                <div class="bg-gray-400">
-                    <label>Concept?</label>
-                    <div>
-                        <textarea id="concept_check" rows="5" cols="70" class="w-full bg-gray-400"> </textarea>
+    <div class="container w-full mx-auto pt-20">
+        <div class="grid grid-cols-2 gap-20 p-5">
+            <div>
+                <h2 id="knop" class="text-xl font-bold py-2">Uw concept</h2>
+                <div class="bg-gray-300 p-5 rounded">
+                    <p>Schrijf uw concept volledig uit. U kunt dan uw concept laten controleren door onze AI. Vervolgens haalt de AI de kernpunten uit uw concept. Deze kernpunten kunt u gebruiken om uw concept aan te passen.</p>
+                    <div class="mt-3">
+                        <label class="font-bold">Concept:</label>
+                        <div class="bg-gray-400 mt-2">
+                            <textarea id="concept_check" rows="5" cols="70" class="w-full p-1 bg-gray-400"> </textarea>
+                        </div>
                     </div>
                 </div>
-                <br>
-                <div class="bg-gray-400">
-                    <label>Wat heb je nodig?</label>
-                    <div>
-                        <textarea rows="4" cols="70" class="w-full bg-gray-400"> </textarea>
-                    </div>
+                <div class="py-2">
+                    <button onclick="runAI_Check(); startAnimation();" style="background-color: #ff6d00;" class="text-white font-bold rounded px-5 py-3">Controleer</button>
                 </div>
-                <br>
-                <div class="bg-gray-400">
-                    <label>Budget?</label>
-                    <div>
-                        <input type="text" class="w-full bg-gray-400">
-                    </div>
+                
+            </div>
+            <div >
+                <h3 class="text-xl font-bold py-2">Gecontroleerd door AI</h3>
+                <div class="bg-gray-300 p-3 rounded">
+                    <h4 class="font-bold mb-1">Samenvatting:</h4>
+                    <p id="checked_output_summary"></p>
+                    <h4 class="font-bold mt-2 mb-1">Gevoelens:</h4>
+                    <ul class="list-disc list-inside" id="checked_output_sentiments"></ul>
+                    <h4 class="font-bold mt-2 mb-1">Onderwerpen:</h4>
+                    <p id="checked_output_topics"></p>
                 </div>
             </div>
-            <div class="p-2">
-                <button onclick="runAI_Check()" class="bg-gray-300 rounded p-2">Controleer</button>
-            </div>
-        </div>
-        <div >
-            <h3 class="text-xl font-bold p-2">Gecontroleerd</h3>
-            <div class="bg-gray-300 p-2">
-                <br>
-                <h4 class="font-bold">Samenvatting:</h4>
-                <p id="checked_output_summary"></p>
-                <br>
-                <h4 class="font-bold">Gevoelens:</h4>
-                <p id="checked_output_sentiments"></p>
-                <br>
-                <h4 class="font-bold">Onderwerpen:</h4>
-                <p id="checked_output_topics"></p>
-                <br>
+
+            <div id="laadwiel" class="invisible flex items-center justify-center content-center">
+                <div role="status">
+                    <svg class="animate-spin -ml-1 mr-3 h-16 w-16 text-blue" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
             </div>
         </div>
     </div>
